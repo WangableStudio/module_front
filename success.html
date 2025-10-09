@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SplitAdmin | Статус оплаты</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      :root {
+        --primary: #3b82f6;
+        --primary-dark: #2563eb;
+        --secondary: #64748b;
+        --success: #10b981;
+        --error: #ef4444;
+        --warning: #f59e0b;
+        --background: #f8fafc;
+        --card-bg: #ffffff;
+        --text: #1e293b;
+        --text-light: #64748b;
+        --border: #e2e8f0;
+        --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+          0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+      }
+
+      body {
+        background: var(--background);
+        color: var(--text);
+        line-height: 1.6;
+        height: 100vh;
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+      }
+
+      .payment-container {
+        width: 100%;
+        max-width: 480px;
+        background: var(--card-bg);
+        border-radius: 20px;
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+
+      .payment-header {
+        padding: 24px;
+        text-align: center;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        margin-bottom: 16px;
+      }
+
+      .logo i {
+        font-size: 24px;
+        color: var(--primary);
+      }
+
+      .logo span {
+        font-size: 20px;
+        font-weight: 700;
+      }
+
+      .payment-body {
+        padding: 32px;
+        text-align: center;
+      }
+
+      .status-icon {
+        font-size: 64px;
+        margin-bottom: 24px;
+      }
+
+      .status-success {
+        color: var(--success);
+      }
+
+      .status-error {
+        color: var(--error);
+      }
+
+      .status-title {
+        font-size: 24px;
+        font-weight: 700;
+        margin-bottom: 12px;
+      }
+
+      .status-message {
+        font-size: 16px;
+        color: var(--text-light);
+        margin-bottom: 24px;
+      }
+
+      .payment-details {
+        background: var(--background);
+        border-radius: 12px;
+        padding: 20px;
+        margin: 24px 0;
+        text-align: left;
+      }
+
+      .detail-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 0;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .detail-row:last-child {
+        border-bottom: none;
+      }
+
+      .detail-label {
+        color: var(--text-light);
+        font-size: 14px;
+      }
+
+      .detail-value {
+        font-weight: 500;
+        font-size: 14px;
+      }
+
+      .total-amount {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--primary);
+      }
+
+      .action-buttons {
+        display: flex;
+        gap: 12px;
+        margin-top: 24px;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 12px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        font-size: 14px;
+        flex: 1;
+      }
+
+      .btn-primary {
+        background: var(--primary);
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background: var(--primary-dark);
+      }
+
+      .btn-outline {
+        background: transparent;
+        border: 2px solid var(--border);
+        color: var(--text);
+      }
+
+      .btn-outline:hover {
+        border-color: var(--primary);
+        color: var(--primary);
+      }
+
+      /* Адаптивность */
+      @media (max-width: 480px) {
+        body {
+          padding: 16px;
+        }
+
+        .payment-container {
+          max-width: 100%;
+        }
+
+        .payment-body {
+          padding: 24px;
+        }
+
+        .status-icon {
+          font-size: 56px;
+        }
+
+        .status-title {
+          font-size: 20px;
+        }
+
+        .status-message {
+          font-size: 14px;
+        }
+
+        .action-buttons {
+          flex-direction: column;
+        }
+
+        .btn {
+          width: 100%;
+        }
+      }
+
+      @media (max-height: 600px) {
+        .payment-container {
+          max-height: 95vh;
+          overflow-y: auto;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="payment-container" id="successPayment" style="display: none">
+      <div class="payment-body">
+        <div class="status-icon status-success">
+          <i class="fas fa-check-circle"></i>
+        </div>
+        <h2 class="status-title">Оплата прошла успешно!</h2>
+        <p class="status-message">
+          Ваш платеж был успешно обработан. Спасибо за использование нашего
+          сервиса.
+        </p>
+
+        <div class="payment-details">
+          <div class="detail-row">
+            <span class="detail-label">Номер заказа:</span>
+            <span class="detail-value">#12345</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Дата и время:</span>
+            <span class="detail-value">19 октября 2023, 14:30</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Способ оплаты:</span>
+            <span class="detail-value">Банковская карта **** 4567</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Сумма платежа:</span>
+            <span class="detail-value total-amount">19 200 ₽</span>
+          </div>
+        </div>
+
+        <div class="action-buttons">
+          <a href="index.html" class="btn btn-primary">
+            <i class="fas fa-home"></i>
+            Вернуться на главную
+          </a>
+          <button class="btn btn-outline" id="printReceiptBtn">
+            <i class="fas fa-print"></i>
+            Распечатать квитанцию
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="payment-container" id="failedPayment" style="display: none">
+      <div class="payment-body">
+        <div class="status-icon status-error">
+          <i class="fas fa-times-circle"></i>
+        </div>
+        <h2 class="status-title">Оплата не прошла</h2>
+        <p class="status-message">
+          К сожалению, произошла ошибка при обработке вашего платежа.
+          Пожалуйста, попробуйте еще раз.
+        </p>
+
+        <div class="payment-details">
+          <div class="detail-row">
+            <span class="detail-label">Номер заказа:</span>
+            <span class="detail-value">#12345</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Дата и время:</span>
+            <span class="detail-value">19 октября 2023, 14:30</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Причина ошибки:</span>
+            <span class="detail-value">Недостаточно средств на карте</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Сумма платежа:</span>
+            <span class="detail-value">19 200 ₽</span>
+          </div>
+        </div>
+
+        <div class="action-buttons">
+          <button class="btn btn-primary" id="retryPaymentBtn">
+            <i class="fas fa-redo"></i>
+            Попробовать снова
+          </button>
+          <a href="index.html" class="btn btn-outline">
+            <i class="fas fa-home"></i>
+            Вернуться на главную
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Определяем, какую страницу показывать на основе URL параметров
+      document.addEventListener("DOMContentLoaded", function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const status = urlParams.get("status");
+
+        if (status === "success") {
+          document.getElementById("successPayment").style.display = "block";
+        } else {
+          document.getElementById("failedPayment").style.display = "block";
+        }
+
+        // Обработчики кнопок
+        document
+          .getElementById("printReceiptBtn")
+          ?.addEventListener("click", function () {
+            alert("Функция печати квитанции будет реализована в будущем");
+          });
+
+        document
+          .getElementById("retryPaymentBtn")
+          ?.addEventListener("click", function () {
+            alert("Перенаправление на страницу оплаты");
+            // В реальном приложении здесь будет перенаправление на страницу оплаты
+          });
+      });
+    </script>
+  </body>
+</html>

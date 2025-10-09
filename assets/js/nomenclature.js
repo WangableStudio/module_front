@@ -68,8 +68,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const apiMethod = data.id ? axios.put : axios.post;
     const url = data.id
-      ? `https://module-bek.onrender.com/api/v1/nomenclature/${data.id}`
-      : "https://module-bek.onrender.com/api/v1/nomenclature/create";
+      ? `https://test.shamex.online/api/v1/nomenclature/${data.id}`
+      : "https://test.shamex.online/api/v1/nomenclature/create";
     apiMethod(url, data, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -149,7 +149,7 @@ document.addEventListener("DOMContentLoaded", function () {
     row.querySelector(".btn-icon.edit").addEventListener("click", function () {
       const id = row.querySelector("input").value;
       axios
-        .get(`https://module-bek.onrender.com/api/v1/nomenclature/${id}`)
+        .get(`https://test.shamex.online/api/v1/nomenclature/${id}`)
         .then((res) => {
           populateForm(res.data);
         })
@@ -174,7 +174,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (confirmed) {
           axios
-            .delete(`https://module-bek.onrender.com/api/v1/nomenclature/${id}`)
+            .delete(`https://test.shamex.online/api/v1/nomenclature/${id}`)
             .then((res) => {
               row.remove();
               Toast.success("Товар успешно удален");
@@ -194,7 +194,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
   axios
-    .get("https://module-bek.onrender.com/api/v1/nomenclature")
+    .get("https://test.shamex.online/api/v1/nomenclature")
     .then((res) => {
       res.data.forEach((data) => {
         addItemToTable(data);

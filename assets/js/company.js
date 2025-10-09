@@ -45,8 +45,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const apiMethod = data.id ? axios.put : axios.post;
     const url = data.id
-      ? `https://module-bek.onrender.com/api/v1/company/${data.id}`
-      : "https://module-bek.onrender.com/api/v1/company/create";
+      ? `https://test.shamex.online/api/v1/company/${data.id}`
+      : "https://test.shamex.online/api/v1/company/create";
     apiMethod(url, data, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -129,7 +129,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function loadCompanyData() {
     axios
-      .get("https://module-bek.onrender.com/api/v1/company")
+      .get("https://test.shamex.online/api/v1/company")
       .then((res) => {
         populateForm(res.data[0])
       })

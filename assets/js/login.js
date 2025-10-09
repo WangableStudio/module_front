@@ -7,7 +7,7 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
 
   btn.disabled = true;
   axios
-    .post("https://module-bek.onrender.com/api/v1/user/login", {
+    .post("https://test.shamex.online/api/v1/user/login", {
       login: document.getElementById("username").value,
       password: document.getElementById("password").value,
     })

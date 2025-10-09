@@ -233,7 +233,7 @@ if (!token) {
   alert("Пользователь не авторизован");
 }
 
-axios.post("https://module-bek.onrender.com/api/v1/user/auth", {}, {
+axios.post("https://test.shamex.online/api/v1/user/auth", {}, {
   headers: {
     Authorization: `Bearer ${token}`,
   },
