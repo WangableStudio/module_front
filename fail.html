@@ -228,15 +228,16 @@
     </style>
   </head>
   <body>
-    <div class="payment-container" id="successPayment">
+
+    <div class="payment-container" id="failedPayment">
       <div class="payment-body">
-        <div class="status-icon status-success">
-          <i class="fas fa-check-circle"></i>
+        <div class="status-icon status-error">
+          <i class="fas fa-times-circle"></i>
         </div>
-        <h2 class="status-title">Оплата прошла успешно!</h2>
+        <h2 class="status-title">Оплата не прошла</h2>
         <p class="status-message">
-          Ваш платеж был успешно обработан. Спасибо за использование нашего
-          сервиса.
+          К сожалению, произошла ошибка при обработке вашего платежа.
+          Пожалуйста, попробуйте еще раз.
         </p>
 
         <div class="payment-details">
@@ -249,28 +250,27 @@
             <span class="detail-value">19 октября 2023, 14:30</span>
           </div>
           <div class="detail-row">
-            <span class="detail-label">Способ оплаты:</span>
-            <span class="detail-value">Банковская карта **** 4567</span>
+            <span class="detail-label">Причина ошибки:</span>
+            <span class="detail-value">Недостаточно средств на карте</span>
           </div>
           <div class="detail-row">
             <span class="detail-label">Сумма платежа:</span>
-            <span class="detail-value total-amount">19 200 ₽</span>
+            <span class="detail-value">19 200 ₽</span>
           </div>
         </div>
 
         <div class="action-buttons">
-          <a href="index.html" class="btn btn-primary">
+          <button class="btn btn-primary" id="retryPaymentBtn">
+            <i class="fas fa-redo"></i>
+            Попробовать снова
+          </button>
+          <a href="index.html" class="btn btn-outline">
             <i class="fas fa-home"></i>
             Вернуться на главную
           </a>
-          <button class="btn btn-outline" id="printReceiptBtn">
-            <i class="fas fa-print"></i>
-            Распечатать квитанцию
-          </button>
         </div>
       </div>
     </div>
-
 
     <script>
       // Определяем, какую страницу показывать на основе URL параметров

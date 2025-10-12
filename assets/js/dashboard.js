@@ -272,7 +272,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
       axios
         .post(
-          "https://test.shamex.online/api/v1/payment/create",
+          "https://test.shamex.online/api/v1/payment/init",
           {
             contractor: formData.contractor,
             contractorAmount: formData.contractorAmount,
