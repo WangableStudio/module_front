@@ -6,6 +6,19 @@ document.addEventListener("DOMContentLoaded", function () {
   const contractorForm = document.getElementById("contractorForm");
   const modalTitle = document.getElementById("modalTitle");
 
+  axios
+    .get("https://test.shamex.online/api/v1/partners/GetSbpMembers")
+    .then((res) => {
+      res.data.forEach((member) => {
+        document.getElementById(
+          "members"
+        ).innerHTML += `<option value="${member.MemberNameRus}">${member.MemberId}</option>`;
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+
   addContractorBtn.addEventListener("click", function () {
     modalTitle.textContent = "Добавить подрядчика";
     contractorForm.reset();
@@ -44,6 +57,19 @@ document.addEventListener("DOMContentLoaded", function () {
     const btn = e.target.querySelector('button[type="submit"]');
     btn.disabled = true;
 
+    const memberInput = contractorForm.querySelector('input[name="memberId"]');
+    const memberValue = memberInput.value;
+
+    // Находим соответствующий <option> из <datalist>
+    const selectedOption = Array.from(
+      document.querySelectorAll("#members option")
+    ).find((option) => option.value === memberValue);
+
+    // Берем textContent (то, что между <option>...</option>)
+    const memberText = selectedOption
+      ? selectedOption.textContent
+      : memberValue;
+
     const formData = new FormData(e.target);
 
     // Подготавливаем данные для отправки
@@ -52,71 +78,57 @@ document.addEventListener("DOMContentLoaded", function () {
       type: formData.get("type"),
       name: formData.get("name"),
       fullName: formData.get("fullName"),
-      billingDescriptor: formData.get("billingDescriptor"),
+      billingDescriptor: "for service",
       inn: formData.get("inn"),
       ogrn: formData.get("ogrn"),
       kpp: formData.get("kpp") || "000000000",
       okved: formData.get("okved"),
       email: formData.get("email"),
       phone: formData.get("phone"),
-      siteUrl: formData.get("siteUrl"),
-      regDepartment: formData.get("regDepartment"),
-      regDate: formData.get("regDate"),
-      assets: formData.get("assets"),
-      primaryActivities: formData.get("primaryActivities"),
+      siteUrl: "https://shamex.online",
       comment: formData.get("comment"),
 
       // Адреса
       legalAddress: formData.get("legalAddress"),
       actualAddress: formData.get("actualAddress"),
-      postalAddress: formData.get("postalAddress"),
       zip: formData.get("zip"),
       city: formData.get("city"),
       country: formData.get("country"),
+      street: formData.get("street"),
 
       // Банковские реквизиты
       bankName: formData.get("bankName"),
+      memberId: memberText,
       bankAccount: formData.get("bankAccount"),
       bankBik: formData.get("bankBik"),
-      bankCorrespondentAccount: formData.get("bankCorrespondentAccount"),
-      bankKbk: formData.get("bankKbk"),
-      bankOktmo: formData.get("bankOktmo"),
 
       // Руководитель
       ceoFirstName: formData.get("ceoFirstName"),
       ceoLastName: formData.get("ceoLastName"),
-      ceoMiddleName: formData.get("ceoMiddleName"),
-      ceoBirthDate: formData.get("ceoBirthDate"),
-      ceoBirthPlace: formData.get("ceoBirthPlace"),
-      ceoDocType: formData.get("ceoDocType"),
-      ceoDocNumber: formData.get("ceoDocNumber"),
-      ceoIssueDate: formData.get("ceoIssueDate"),
-      ceoIssuedBy: formData.get("ceoIssuedBy"),
-      ceoAddress: formData.get("ceoAddress"),
       ceoPhone: formData.get("ceoPhone"),
       ceoCountry: formData.get("ceoCountry"),
     };
 
     // Валидация обязательных полей
-    if (!validateRequiredFields(data)) {
-      btn.disabled = false;
-      return;
-    }
+    // if (!validateRequiredFields(data)) {
+    //   btn.disabled = false;
+    //   return;
+    // }
 
-    if (!validateINN(data.inn)) {
-      Toast.error("Пожалуйста, введите корректный ИНН", "Ошибка валидации");
-      btn.disabled = false;
-      return;
-    }
+    // if (!validateINN(data.inn)) {
+    //   Toast.error("Пожалуйста, введите корректный ИНН", "Ошибка валидации");
+    //   btn.disabled = false;
+    //   return;
+    // }
 
-    if (!validateBankDetails(data.bankAccount, data.bankBik)) {
-      Toast.error(
-        "Проверьте правильность банковских реквизитов",
-        "Ошибка валидации"
-      );
-      btn.disabled = false;
-      return;
-    }
+    // if (!validateBankDetails(data.bankAccount, data.bankBik)) {
+    //   Toast.error(
+    //     "Проверьте правильность банковских реквизитов",
+    //     "Ошибка валидации"
+    //   );
+    //   btn.disabled = false;
+    //   return;
+    // }
 
     const token = localStorage.getItem("token");
     if (!token) {
@@ -209,17 +221,12 @@ document.addEventListener("DOMContentLoaded", function () {
       "type",
       "name",
       "fullName",
-      "billingDescriptor",
       "inn",
       "ogrn",
       "kpp",
       "okved",
       "email",
       "phone",
-      "siteUrl",
-      "regDepartment",
-      "regDate",
-      "assets",
       "primaryActivities",
       "comment",
       "legalAddress",
@@ -227,30 +234,30 @@ document.addEventListener("DOMContentLoaded", function () {
       "postalAddress",
       "zip",
       "city",
+      "street",
       "country",
       "bankName",
       "bankAccount",
       "bankBik",
-      "bankCorrespondentAccount",
-      "bankKbk",
-      "bankOktmo",
+      "memberId",
       "ceoFirstName",
       "ceoLastName",
-      "ceoMiddleName",
-      "ceoBirthDate",
-      "ceoBirthPlace",
-      "ceoDocType",
-      "ceoDocNumber",
-      "ceoIssueDate",
-      "ceoIssuedBy",
-      "ceoAddress",
       "ceoPhone",
       "ceoCountry",
     ];
 
     fields.forEach((field) => {
       const input = contractorForm.querySelector(`[name="${field}"]`);
-      if (input && data[field] !== undefined && data[field] !== null) {
+      if (!input) return;
+
+      // 🔹 Если name === "hidden", подставляем data.id
+      if (field === "hidden" && data.id !== undefined) {
+        input.value = data.id;
+        return;
+      }
+
+      // 🔹 Для остальных полей стандартное заполнение
+      if (data[field] !== undefined && data[field] !== null) {
         input.value = data[field];
       }
     });
@@ -279,6 +286,7 @@ document.addEventListener("DOMContentLoaded", function () {
   function addContractorToTable(data) {
     const tbody = document.querySelector(".data-table tbody");
     const row = document.createElement("tr");
+    console.log(data.id);
 
     row.innerHTML = `
       <input type="hidden" value="${data.id}">

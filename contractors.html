@@ -169,7 +169,7 @@
                 <div class="form-group">
                   <label class="field-required">Тип подрядчика</label>
                   <div class="select-wrapper">
-                    <select class="form-select" name="type" required>
+                    <select class="form-select" name="type">
                       <option value="">Выберите тип</option>
                       <option value="ip">ИП</option>
                       <option value="ooo">ООО</option>
@@ -187,7 +187,6 @@
                     class="form-input"
                     name="name"
                     placeholder="ООО 'Ромашка'"
-                    required
                   />
                 </div>
 
@@ -198,20 +197,6 @@
                     class="form-input"
                     name="fullName"
                     placeholder="Общество с ограниченной ответственностью 'Ромашка'"
-                    required
-                  />
-                </div>
-
-                <div class="form-group">
-                  <label class="field-required"
-                    >Название для СМС (BillingDescriptor)</label
-                  >
-                  <input
-                    type="text"
-                    class="form-input"
-                    name="billingDescriptor"
-                    placeholder="ООО Ромашка"
-                    required
                   />
                 </div>
 
@@ -222,7 +207,6 @@
                     class="form-input"
                     name="inn"
                     placeholder="123456789012"
-                    required
                   />
                 </div>
 
@@ -233,7 +217,6 @@
                     class="form-input"
                     name="ogrn"
                     placeholder="1234567890123"
-                    required
                   />
                 </div>
 
@@ -265,7 +248,6 @@
                     class="form-input"
                     name="email"
                     placeholder="email@example.com"
-                    required
                   />
                 </div>
 
@@ -276,54 +258,7 @@
                     class="form-input"
                     name="phone"
                     placeholder="+7 (999) 999-99-99"
-                    required
                   />
-                </div>
-
-                <div class="form-group">
-                  <label class="field-required">Сайт</label>
-                  <input
-                    type="url"
-                    class="form-input"
-                    name="siteUrl"
-                    placeholder="https://example.com"
-                    required
-                  />
-                </div>
-
-                <div class="form-group">
-                  <label>Орган регистрации</label>
-                  <input
-                    type="text"
-                    class="form-input"
-                    name="regDepartment"
-                    placeholder="ФНС №1 по г. Москве"
-                  />
-                </div>
-
-                <div class="form-group">
-                  <label>Дата регистрации</label>
-                  <input type="date" class="form-input" name="regDate" />
-                </div>
-
-                <div class="form-group">
-                  <label>Уставный капитал</label>
-                  <input
-                    type="text"
-                    class="form-input"
-                    name="assets"
-                    placeholder="3000000"
-                  />
-                </div>
-
-                <div class="form-group full-width">
-                  <label>Основные виды деятельности</label>
-                  <textarea
-                    class="form-input"
-                    name="primaryActivities"
-                    rows="2"
-                    placeholder="Торговля, услуги..."
-                  ></textarea>
                 </div>
 
                 <div class="form-group full-width">
@@ -378,6 +313,16 @@
                     required
                   />
                 </div>
+                <div class="form-group">
+                  <label class="field-required">Улица, дом</label>
+                  <input
+                    type="text"
+                    class="form-input"
+                    name="street"
+                    placeholder="Тверская улица"
+                    required
+                  />
+                </div>
 
                 <div class="form-group full-width">
                   <label class="field-required">Юридический адрес</label>
@@ -386,7 +331,6 @@
                     class="form-input"
                     name="legalAddress"
                     placeholder="ул. Маяковского, 3"
-                    required
                   />
                 </div>
 
@@ -399,16 +343,6 @@
                     placeholder="ул. Маяковского, 5"
                   />
                 </div>
-
-                <div class="form-group full-width">
-                  <label>Почтовый адрес</label>
-                  <input
-                    type="text"
-                    class="form-input"
-                    name="postalAddress"
-                    placeholder="ул. Маяковского, 7"
-                  />
-                </div>
               </div>
             </div>
 
@@ -418,11 +352,22 @@
                 <div class="form-group">
                   <label class="field-required">Название банка</label>
                   <input
+                    list="members"
+                    type="text"
+                    class="form-input"
+                    name="memberId"
+                    placeholder="Т-Банк"
+                  />
+                  <datalist id="members"> </datalist>
+                </div>
+
+                <div class="form-group">
+                  <label class="field-required">Полное название банка</label>
+                  <input
                     type="text"
                     class="form-input"
                     name="bankName"
                     placeholder="ПАО 'Сбербанк России'"
-                    required
                   />
                 </div>
 
@@ -433,7 +378,6 @@
                     class="form-input"
                     name="bankAccount"
                     placeholder="40702810123456789012"
-                    required
                   />
                 </div>
 
@@ -444,37 +388,6 @@
                     class="form-input"
                     name="bankBik"
                     placeholder="044525225"
-                    required
-                  />
-                </div>
-
-                <div class="form-group">
-                  <label>Корреспондентский счет</label>
-                  <input
-                    type="text"
-                    class="form-input"
-                    name="bankCorrespondentAccount"
-                    placeholder="30101810400000000225"
-                  />
-                </div>
-
-                <div class="form-group">
-                  <label>КБК</label>
-                  <input
-                    type="text"
-                    class="form-input"
-                    name="bankKbk"
-                    placeholder="18210501011011000110"
-                  />
-                </div>
-
-                <div class="form-group">
-                  <label>ОКТМО</label>
-                  <input
-                    type="text"
-                    class="form-input"
-                    name="bankOktmo"
-                    placeholder="45286575000"
                   />
                 </div>
               </div>
@@ -490,7 +403,6 @@
                     class="form-input"
                     name="ceoFirstName"
                     placeholder="Иван"
-                    required
                   />
                 </div>
 
@@ -501,32 +413,6 @@
                     class="form-input"
                     name="ceoLastName"
                     placeholder="Иванов"
-                    required
-                  />
-                </div>
-
-                <div class="form-group">
-                  <label>Отчество руководителя</label>
-                  <input
-                    type="text"
-                    class="form-input"
-                    name="ceoMiddleName"
-                    placeholder="Иванович"
-                  />
-                </div>
-
-                <div class="form-group">
-                  <label>Дата рождения</label>
-                  <input type="date" class="form-input" name="ceoBirthDate" />
-                </div>
-
-                <div class="form-group">
-                  <label>Место рождения</label>
-                  <input
-                    type="text"
-                    class="form-input"
-                    name="ceoBirthPlace"
-                    placeholder="Москва"
                   />
                 </div>
 
@@ -537,7 +423,6 @@
                     class="form-input"
                     name="ceoPhone"
                     placeholder="+7 (999) 999-99-99"
-                    required
                   />
                 </div>
 
@@ -549,53 +434,6 @@
                     name="ceoCountry"
                     placeholder="RUS"
                     value="RUS"
-                    required
-                  />
-                </div>
-
-                <div class="form-group full-width">
-                  <label class="field-required">Адрес руководителя</label>
-                  <input
-                    type="text"
-                    class="form-input"
-                    name="ceoAddress"
-                    placeholder="108809, г. Москва, ул. Маяковского, 3"
-                    required
-                  />
-                </div>
-
-                <div class="form-group">
-                  <label>Тип документа</label>
-                  <input
-                    type="text"
-                    class="form-input"
-                    name="ceoDocType"
-                    placeholder="Паспорт"
-                  />
-                </div>
-
-                <div class="form-group">
-                  <label>Номер документа</label>
-                  <input
-                    type="text"
-                    class="form-input"
-                    name="ceoDocNumber"
-                    placeholder="4510 123456"
-                  />
-                </div>
-
-                <div class="form-group">
-                  <label>Дата выдачи</label>
-                  <input type="date" class="form-input" name="ceoIssueDate" />
-                </div>
-
-                <div class="form-group">
-                  <label>Кем выдан</label>
-                  <input
-                    type="text"
-                    class="form-input"
-                    name="ceoIssuedBy"
-                    placeholder="УМВД России по Московской области"
                   />
                 </div>
               </div>
