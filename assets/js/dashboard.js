@@ -267,6 +267,8 @@ document.addEventListener("DOMContentLoaded", function () {
       saveStepData(currentStep);
       updateSummary();
 
+      Loader.start("Создаем ссылку...");
+
       // Здесь будет реальная интеграция с API
       const totalAmount = calculateTotal();
 
@@ -292,6 +294,7 @@ document.addEventListener("DOMContentLoaded", function () {
           const linkInput = document.querySelector(".generated-link input");
           linkInput.value = res.data.paymentUrl;
           currentStep = 4;
+          Loader.hide();
           updateProgress();
         })
         .catch((err) => {
@@ -370,6 +373,12 @@ document.addEventListener("DOMContentLoaded", function () {
         const companyAmount = document.getElementById("companyAmount");
         const commissionAmount = document.getElementById("commissionAmount");
 
+        // Проверка суммы компании
+        if (!companyAmount.value) {
+          Toast.error("Укажите сумму компании");
+          return false;
+        }
+
         // Проверка комиссии
         if (!commissionAmount.value) {
           Toast.error("Укажите комиссию");
@@ -399,7 +408,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
         if (!hasItems) {
-          Toast.warning("Добавьте хотя бы один товар");
+          Toast.error("Добавьте хотя бы один товар");
           return false;
         }
 

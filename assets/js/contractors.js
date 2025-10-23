@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const modalTitle = document.getElementById("modalTitle");
 
   axios
-    .get("https://test.shamex.online/api/v1/partners/GetSbpMembers")
+    .get("https://test.shamex.online/api/v1/contractors/GetSbpMembers")
     .then((res) => {
       res.data.forEach((member) => {
         document.getElementById(
@@ -53,6 +53,8 @@ document.addEventListener("DOMContentLoaded", function () {
   // Обработка отправки формы
   contractorForm.addEventListener("submit", function (e) {
     e.preventDefault();
+
+    Loader.start("Загружаем данные...");
 
     const btn = e.target.querySelector('button[type="submit"]');
     btn.disabled = true;
@@ -101,6 +103,7 @@ document.addEventListener("DOMContentLoaded", function () {
       memberId: memberText,
       bankAccount: formData.get("bankAccount"),
       bankBik: formData.get("bankBik"),
+      bankCorrespondentAccount: formData.get("bankCorrespondentAccount"),
 
       // Руководитель
       ceoFirstName: formData.get("ceoFirstName"),
@@ -165,6 +168,7 @@ document.addEventListener("DOMContentLoaded", function () {
       })
       .finally(() => {
         btn.disabled = false;
+        Loader.hide();
       });
   });
 
@@ -239,6 +243,7 @@ document.addEventListener("DOMContentLoaded", function () {
       "bankName",
       "bankAccount",
       "bankBik",
+      "bankCorrespondentAccount",
       "memberId",
       "ceoFirstName",
       "ceoLastName",
@@ -286,7 +291,6 @@ document.addEventListener("DOMContentLoaded", function () {
   function addContractorToTable(data) {
     const tbody = document.querySelector(".data-table tbody");
     const row = document.createElement("tr");
-    console.log(data.id);
 
     row.innerHTML = `
       <input type="hidden" value="${data.id}">
@@ -347,12 +351,14 @@ document.addEventListener("DOMContentLoaded", function () {
     // Редактирование
     row.querySelector(".btn-icon.edit").addEventListener("click", function () {
       const id = row.querySelector("input").value;
+      Loader.data("Загружаем данные...");
       axios
         .get(`https://test.shamex.online/api/v1/contractors/${id}`)
         .then((res) => {
           populateForm(res.data);
           modalTitle.textContent = "Редактировать подрядчика";
           contractorModal.style.display = "block";
+          Loader.hide();
         })
         .catch((err) => {
           console.error(err);
@@ -370,7 +376,7 @@ document.addEventListener("DOMContentLoaded", function () {
         Toast.info("Регистрация в Т-Банке...", "Инфо");
 
         axios
-          .post(`https://test.shamex.online/api/v1/partners/register`, {
+          .post(`https://test.shamex.online/api/v1/contractors/register`, {
             contractorId: id,
           })
           .then((res) => {
@@ -382,8 +388,7 @@ document.addEventListener("DOMContentLoaded", function () {
             row.cells[5].textContent = res.data.partnerId;
           })
           .catch((err) => {
-            console.error(err);
-            Toast.error("Ошибка при регистрации в Т-Банке", "Ошибка");
+            Toast.error(err.response.data.message, "Ошибка");
           });
       });
 
@@ -444,12 +449,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Загрузка подрядчиков при загрузке страницы
   function loadContractors() {
+    Loader.start("Загружаем данные...");
     axios
       .get("https://test.shamex.online/api/v1/contractors")
       .then((res) => {
+        // Loader.hide();
         res.data.forEach((data) => {
           addContractorToTable(data);
         });
+        Loader.hide();
       })
       .catch((err) => {
         console.error(err);

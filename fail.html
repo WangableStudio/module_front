@@ -241,22 +241,6 @@
         </p>
 
         <div class="payment-details">
-          <div class="detail-row">
-            <span class="detail-label">Номер заказа:</span>
-            <span class="detail-value">#12345</span>
-          </div>
-          <div class="detail-row">
-            <span class="detail-label">Дата и время:</span>
-            <span class="detail-value">19 октября 2023, 14:30</span>
-          </div>
-          <div class="detail-row">
-            <span class="detail-label">Причина ошибки:</span>
-            <span class="detail-value">Недостаточно средств на карте</span>
-          </div>
-          <div class="detail-row">
-            <span class="detail-label">Сумма платежа:</span>
-            <span class="detail-value">19 200 ₽</span>
-          </div>
         </div>
 
         <div class="action-buttons">
@@ -271,27 +255,7 @@
         </div>
       </div>
     </div>
-
-    <script>
-      // Определяем, какую страницу показывать на основе URL параметров
-      document.addEventListener("DOMContentLoaded", function () {
-        const urlParams = new URLSearchParams(window.location.search);
-        const status = urlParams.get("status");
-
-        // Обработчики кнопок
-        document
-          .getElementById("printReceiptBtn")
-          ?.addEventListener("click", function () {
-            alert("Функция печати квитанции будет реализована в будущем");
-          });
-
-        document
-          .getElementById("retryPaymentBtn")
-          ?.addEventListener("click", function () {
-            alert("Перенаправление на страницу оплаты");
-            // В реальном приложении здесь будет перенаправление на страницу оплаты
-          });
-      });
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="./assets/js/result.js"></script>
   </body>
 </html>
