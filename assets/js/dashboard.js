@@ -294,12 +294,13 @@ document.addEventListener("DOMContentLoaded", function () {
           const linkInput = document.querySelector(".generated-link input");
           linkInput.value = res.data.paymentUrl;
           currentStep = 4;
-          Loader.hide();
           updateProgress();
         })
         .catch((err) => {
           console.log(err);
-        });
+        }).finally(() => {
+          Loader.hide();
+        })
 
       document.querySelector(".success-result p strong").textContent =
         formatCurrency(totalAmount);
