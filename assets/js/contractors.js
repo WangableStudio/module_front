@@ -113,10 +113,12 @@ document.addEventListener("DOMContentLoaded", function () {
     };
 
     // Валидация обязательных полей
-    // if (!validateRequiredFields(data)) {
-    //   btn.disabled = false;
-    //   return;
-    // }
+    if (!validateRequiredFields(data)) {
+      Toast.error("Пожалуйста, заполните все обязательные поля", "Ошибка");
+      btn.disabled = false;
+      Loader.hide();
+      return;
+    }
 
     // if (!validateINN(data.inn)) {
     //   Toast.error("Пожалуйста, введите корректный ИНН", "Ошибка валидации");
@@ -137,6 +139,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (!token) {
       alert("Пользователь не авторизован");
       btn.disabled = false;
+      Loader.hide();
       return;
     }
 
@@ -184,16 +187,15 @@ document.addEventListener("DOMContentLoaded", function () {
       "email",
       "phone",
       "siteUrl",
-      "legalAddress",
       "zip",
       "city",
       "country",
       "bankName",
       "bankAccount",
       "bankBik",
+      "memberId",
       "ceoFirstName",
       "ceoLastName",
-      "ceoAddress",
       "ceoPhone",
       "ceoCountry",
     ];
