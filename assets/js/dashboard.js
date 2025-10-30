@@ -129,6 +129,9 @@ document.addEventListener("DOMContentLoaded", function () {
         0
       );
       const totalCompanyAmount = totalItemsAmount;
+      formData.companyAmount = totalCompanyAmount + formData.commission;
+      console.log(formData);
+
       companyElement.textContent = `ООО "ВашаКомпания" - ${formatCurrency(
         totalCompanyAmount
       )}`;
