@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", function () {
     .get(`https://test.shamex.online/api/v1/payment/${orderId}`)
     .then((res) => {
       const data = res.data;
-      const formattedDate = new Date(data.payout?.createdAt).toLocaleString(
+      const formattedDate = new Date(data.updatedAt).toLocaleString(
         "ru-RU",
         {
           day: "numeric",
