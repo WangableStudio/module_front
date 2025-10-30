@@ -86,10 +86,8 @@ document.addEventListener("DOMContentLoaded", function () {
         break;
 
       case 2:
-        const companyAmount = document.getElementById("companyAmount");
         const commissionAmount = document.getElementById("commissionAmount");
 
-        formData.companyAmount = parseFloat(companyAmount.value) || 0;
         formData.commission = parseFloat(commissionAmount.value) || 0;
 
         // Сохраняем товары
@@ -130,7 +128,7 @@ document.addEventListener("DOMContentLoaded", function () {
         (sum, item) => sum + item.amount,
         0
       );
-      const totalCompanyAmount = formData.companyAmount + totalItemsAmount;
+      const totalCompanyAmount = totalItemsAmount;
       companyElement.textContent = `ООО "ВашаКомпания" - ${formatCurrency(
         totalCompanyAmount
       )}`;
@@ -200,12 +198,12 @@ document.addEventListener("DOMContentLoaded", function () {
     newItem.className = "nomenclature-item";
     newItem.innerHTML = `
             <div class="select-wrapper">
-                <select class="form-select">
+                <select id="select-product" class="form-select">
                     <option value="">-- Выберите товар --</option>
                     ${products
                       .map(
                         (item) =>
-                          `<option value="${item.id}">${item.name}</option>`
+                          `<option data-price="${item.price}" value="${item.id}">${item.name}</option>`
                       )
                       .join("")}
                 </select>
@@ -222,6 +220,16 @@ document.addEventListener("DOMContentLoaded", function () {
     // Добавляем обработчик для новой кнопки удаления
     newItem.querySelector(".btn-remove").addEventListener("click", function () {
       newItem.remove();
+    });
+  });
+
+  document.querySelectorAll("#select-product").forEach((select) => {
+    select.addEventListener("change", () => {
+      const selectedOption = select.options[select.selectedIndex]; // выбранный option
+      const price = selectedOption.dataset.price; // значение data-price
+
+      console.log("ID товара:", select.value);
+      console.log("Цена товара:", price);
     });
   });
 
@@ -298,9 +306,10 @@ document.addEventListener("DOMContentLoaded", function () {
         })
         .catch((err) => {
           console.log(err);
-        }).finally(() => {
-          Loader.hide();
         })
+        .finally(() => {
+          Loader.hide();
+        });
 
       document.querySelector(".success-result p strong").textContent =
         formatCurrency(totalAmount);
@@ -340,7 +349,6 @@ document.addEventListener("DOMContentLoaded", function () {
     // Сброс полей
     document.getElementById("contractorSelect").selectedIndex = 0;
     document.getElementById("contractorAmount").value = "";
-    document.getElementById("companyAmount").value = "";
     document.getElementById("commissionAmount").value = "";
 
     // Оставляем только один товар
@@ -441,7 +449,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const selects = document.querySelectorAll(".nomenclature-item select");
     selects.forEach((select) => {
       res.data.map((nomenclature) => {
-        select.innerHTML += `<option value="${nomenclature.id}">${nomenclature.name}</option>`;
+        select.innerHTML += `<option data-price="${nomenclature.price}" value="${nomenclature.id}">${nomenclature.name}</option>`;
       });
     });
     products.push(...res.data);
