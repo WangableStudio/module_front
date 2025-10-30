@@ -227,9 +227,6 @@ document.addEventListener("DOMContentLoaded", function () {
     select.addEventListener("change", () => {
       const selectedOption = select.options[select.selectedIndex]; // выбранный option
       const price = selectedOption.dataset.price; // значение data-price
-
-      console.log("ID товара:", select.value);
-      console.log("Цена товара:", price);
     });
   });
 
@@ -379,14 +376,7 @@ document.addEventListener("DOMContentLoaded", function () {
         break;
 
       case 2:
-        const companyAmount = document.getElementById("companyAmount");
         const commissionAmount = document.getElementById("commissionAmount");
-
-        // Проверка суммы компании
-        if (!companyAmount.value) {
-          Toast.error("Укажите сумму компании");
-          return false;
-        }
 
         // Проверка комиссии
         if (!commissionAmount.value) {
