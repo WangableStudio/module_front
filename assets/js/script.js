@@ -496,6 +496,7 @@ function initModals() {
       document.querySelector('[name="hidden"]').value = "";
     }
   });
+  
 
   // Закрытие модальных окон по ESC
   document.addEventListener("keydown", function (e) {
