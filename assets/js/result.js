@@ -27,12 +27,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 <span class="detail-value">${formattedDate}</span>
               </div>
               <div class="detail-row">
-                <span class="detail-label">Способ оплаты:</span>
-                <span class="detail-value">${
-                  data.paymentMethod || "Не указано"
-                }</span>
-              </div>
-              <div class="detail-row">
                 <span class="detail-label">Комиссия сервиса:</span>
                 <span class="detail-value"
                   >${Number(data.commission).toLocaleString(
@@ -52,7 +46,6 @@ document.addEventListener("DOMContentLoaded", function () {
     .catch((err) => {
       console.log(err);
     });
-
   // Обработчики кнопок
   document
     .getElementById("printReceiptBtn")

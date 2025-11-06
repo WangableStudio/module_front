@@ -8,7 +8,7 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
-    <link rel="stylesheet" href="./assets/css/style.css">
+    <link rel="stylesheet" href="./assets/css/style.css" />
     <style>
       :root {
         --primary: #3b82f6;
@@ -231,6 +231,12 @@
   <body>
     <div class="payment-container" id="successPayment">
       <div class="payment-body">
+        <!-- <div class="detail-row">
+                <span class="detail-label">Способ оплаты:</span>
+                <span class="detail-value">${
+                  data.paymentMethod || "Не указано"
+                }</span>
+              </div> -->
         <div class="status-icon status-success">
           <i class="fas fa-check-circle"></i>
         </div>
