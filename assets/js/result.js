@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", function () {
     .get(`https://test.shamex.online/api/v1/payment/${orderId}`)
     .then((res) => {
       const data = res.data;
-      const formattedDate = new Date(data.payment?.updatedAt).toLocaleString(
+      const formattedDate = new Date(data.updatedAt).toLocaleString(
         "ru-RU",
         {
           day: "numeric",
@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", function () {
       paymentDetails.innerHTML = `
               <div class="detail-row">
                 <span class="detail-label">Номер заказа:</span>
-                <span class="detail-value">${data.payment?.orderId}</span>
+                <span class="detail-value">${data.orderId}</span>
               </div>
               <div class="detail-row">
                 <span class="detail-label">Дата и время:</span>
@@ -29,13 +29,13 @@ document.addEventListener("DOMContentLoaded", function () {
               <div class="detail-row">
                 <span class="detail-label">Способ оплаты:</span>
                 <span class="detail-value">${
-                  data.payment?.paymentMethod || "Не указано"
+                  data.paymentMethod || "Не указано"
                 }</span>
               </div>
               <div class="detail-row">
                 <span class="detail-label">Комиссия сервиса:</span>
                 <span class="detail-value"
-                  >${Number(data.payment?.commission).toLocaleString(
+                  >${Number(data.commission).toLocaleString(
                     "ru-RU"
                   )} ₽</span
                 >
@@ -43,7 +43,7 @@ document.addEventListener("DOMContentLoaded", function () {
               <div class="detail-row">
                 <span class="detail-label">Сумма платежа:</span>
                 <span class="detail-value total-amount">${Number(
-                  data.payment?.totalAmount
+                  data.totalAmount
                 ).toLocaleString("ru-RU")} ₽</span>
               </div>
             `;
