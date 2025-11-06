@@ -37,6 +37,10 @@
             <i class="fas fa-boxes"></i>
             <span>Номенклатура</span>
           </a>
+          <a href="payouts.html" class="menu-item">
+            <i class="fas fa-money-bill-transfer"></i>
+            <span>Выплаты</span>
+          </a>
           <a href="#" id="logoutBtn" class="menu-item">
             <i class="fas fa-right-from-bracket"></i>
             <span>Выход</span>
@@ -152,11 +156,11 @@
           <div class="progress-bar">
             <div class="progress-step active" data-step="1">
               <div class="step-number">1</div>
-              <span>Подрядчики</span>
+              <span>Основные данные</span>
             </div>
             <div class="progress-step" data-step="2">
               <div class="step-number">2</div>
-              <span>Компания</span>
+              <span>Товары</span>
             </div>
             <div class="progress-step" data-step="3">
               <div class="step-number">3</div>
@@ -164,17 +168,8 @@
             </div>
           </div>
 
-          <!-- Шаг 1: Подрядчики -->
+          <!-- Шаг 1: Основные данные -->
           <div class="step-content active" data-step="1">
-            <div class="form-group">
-              <label>Выберите подрядчика</label>
-              <div class="select-wrapper">
-                <select class="form-select" id="contractorSelect">
-                  <option value="">-- Выберите подрядчика --</option>
-                </select>
-                <i class="fas fa-chevron-down"></i>
-              </div>
-            </div>
             <div class="form-group">
               <label>Сумма для подрядчика (₽)</label>
               <input
@@ -182,6 +177,8 @@
                 class="form-input"
                 id="contractorAmount"
                 placeholder="2500"
+                min="1"
+                required
               />
             </div>
             <button class="btn btn-next">
@@ -190,26 +187,8 @@
             </button>
           </div>
 
-          <!-- Шаг 2: Компания -->
+          <!-- Шаг 2: Товары -->
           <div class="step-content" data-step="2">
-            <div class="company-info">
-              <h3>Данные компании</h3>
-              <div class="company-details">
-                <div class="detail-item">
-                  <span class="detail-label">Название:</span>
-                  <span class="detail-value">ООО "ВашаКомпания"</span>
-                </div>
-                <div class="detail-item">
-                  <span class="detail-label">ИНН:</span>
-                  <span class="detail-value">7712345678</span>
-                </div>
-                <div class="detail-item">
-                  <span class="detail-label">Расчетный счет:</span>
-                  <span class="detail-value">40702810123456789012</span>
-                </div>
-              </div>
-            </div>
-
             <!-- Блок товаров -->
             <div class="nomenclature-header">
               <h3>Добавление товаров</h3>
@@ -219,15 +198,24 @@
               </button>
             </div>
 
-            <div class="nomenclature-list">
+            <div class="nomenclature-list" id="nomenclatureList">
               <div class="nomenclature-item">
                 <div class="select-wrapper">
-                  <select id="select-product" class="form-select">
+                  <select class="form-select product-select">
                     <option value="">-- Выберите товар --</option>
                   </select>
                   <i class="fas fa-chevron-down"></i>
                 </div>
-                <input type="number" class="form-input" placeholder="300" />
+                <div class="price-display">
+                  <span class="price-label">Цена:</span>
+                  <span class="price-value">0 ₽</span>
+                </div>
+                <input
+                  type="number"
+                  class="form-input product-amount"
+                  placeholder="Введите сумму"
+                  min="1"
+                />
                 <button class="btn btn-remove">
                   <i class="fas fa-times"></i>
                 </button>
@@ -242,6 +230,7 @@
                 class="form-input"
                 id="commissionAmount"
                 placeholder="0"
+                min="0"
                 required
               />
             </div>
@@ -267,15 +256,13 @@
                 <h4>Распределение платежа</h4>
                 <div class="summary-item">
                   <span class="summary-label">Подрядчик:</span>
-                  <span class="summary-value" data-summary="contractor"
-                    >ИП Калинин - 2 500 ₽</span
-                  >
+                  <span class="summary-value" data-summary="contractor">
+                    Будет выбран при выплате - 2 500 ₽
+                  </span>
                 </div>
                 <div class="summary-item">
-                  <span class="summary-label">Компания (включая услуги):</span>
-                  <span class="summary-value" data-summary="company"
-                    >ООО "ВашаКомпания" - 16 000 ₽</span
-                  >
+                  <span class="summary-label">Товары:</span>
+                  <span class="summary-value" data-summary="products">0 ₽</span>
                 </div>
                 <div class="summary-item">
                   <span class="summary-label">Комиссия:</span>
@@ -286,7 +273,7 @@
               </div>
 
               <div class="summary-section">
-                <h4>Услуги</h4>
+                <h4>Детализация товаров</h4>
                 <div class="nomenclature-summary">
                   <!-- Товары будут здесь -->
                 </div>
@@ -296,7 +283,7 @@
             <div class="summary-total">
               <div class="total-amount">
                 <span>Итого к оплате:</span>
-                <span class="total-number">19 200 ₽</span>
+                <span class="total-number">0 ₽</span>
               </div>
             </div>
 
@@ -322,11 +309,7 @@
               <p>Сумма: <strong></strong></p>
 
               <div class="generated-link">
-                <input
-                  type="text"
-                  value="https://pay.tinkoff.ru/example-link"
-                  readonly
-                />
+                <input type="text" readonly />
                 <button class="btn btn-copy">
                   <i class="fas fa-copy"></i>
                 </button>

@@ -15,9 +15,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Данные формы
   let formData = {
-    contractor: null,
     contractorAmount: 0,
-    companyAmount: 0,
     commission: 0,
     items: [],
   };
@@ -49,7 +47,6 @@ document.addEventListener("DOMContentLoaded", function () {
   document.querySelectorAll(".btn-next").forEach((btn) => {
     btn.addEventListener("click", function () {
       if (validateStep(currentStep)) {
-        // Сохраняем данные перед переходом
         saveStepData(currentStep);
         currentStep++;
 
@@ -75,19 +72,12 @@ document.addEventListener("DOMContentLoaded", function () {
   function saveStepData(step) {
     switch (step) {
       case 1:
-        const contractorSelect = document.getElementById("contractorSelect");
         const contractorAmount = document.getElementById("contractorAmount");
-
-        formData.contractor = {
-          id: contractorSelect.value,
-          name: contractorSelect.options[contractorSelect.selectedIndex].text,
-        };
         formData.contractorAmount = parseFloat(contractorAmount.value) || 0;
         break;
 
       case 2:
         const commissionAmount = document.getElementById("commissionAmount");
-
         formData.commission = parseFloat(commissionAmount.value) || 0;
 
         // Сохраняем товары
@@ -95,13 +85,16 @@ document.addEventListener("DOMContentLoaded", function () {
         const items = document.querySelectorAll(".nomenclature-item");
 
         items.forEach((item) => {
-          const select = item.querySelector("select");
-          const input = item.querySelector("input");
+          const select = item.querySelector(".product-select");
+          const input = item.querySelector(".product-amount");
 
           if (select.value && input.value) {
+            const product = products.find(p => p.id == select.value);
             formData.items.push({
+              id: select.value,
               name: select.options[select.selectedIndex].text,
               amount: parseFloat(input.value) || 0,
+              defaultPrice: product ? product.price : 0
             });
           }
         });
@@ -112,40 +105,25 @@ document.addEventListener("DOMContentLoaded", function () {
   // Обновление итоговой информации
   function updateSummary() {
     // Обновляем подрядчика
-    const contractorElement = document.querySelector(
-      '[data-summary="contractor"]'
-    );
-    if (contractorElement && formData.contractor) {
-      contractorElement.textContent = `${
-        formData.contractor.name
-      } - ${formatCurrency(formData.contractorAmount)}`;
+    const contractorElement = document.querySelector('[data-summary="contractor"]');
+    if (contractorElement) {
+      contractorElement.textContent = `Будет выбран при выплате - ${formatCurrency(formData.contractorAmount)}`;
     }
 
-    // Обновляем компанию (включая товары)
-    const companyElement = document.querySelector('[data-summary="company"]');
-    if (companyElement) {
-      const totalItemsAmount = formData.items.reduce(
-        (sum, item) => sum + item.amount,
-        0
-      );
-      const totalCompanyAmount = totalItemsAmount;
-      formData.companyAmount = totalCompanyAmount + formData.commission;
-      console.log(formData);
-
-      companyElement.textContent = `ООО "ВашаКомпания" - ${formatCurrency(
-        totalCompanyAmount
-      )}`;
+    // Обновляем товары
+    const productsElement = document.querySelector('[data-summary="products"]');
+    const totalItemsAmount = formData.items.reduce((sum, item) => sum + item.amount, 0);
+    if (productsElement) {
+      productsElement.textContent = formatCurrency(totalItemsAmount);
     }
 
     // Обновляем комиссию
-    const commissionElement = document.querySelector(
-      '[data-summary="commission"]'
-    );
+    const commissionElement = document.querySelector('[data-summary="commission"]');
     if (commissionElement) {
       commissionElement.textContent = formatCurrency(formData.commission);
     }
 
-    // Обновляем товары
+    // Обновляем детализацию товаров
     const itemsContainer = document.querySelector(".nomenclature-summary");
     if (itemsContainer) {
       itemsContainer.innerHTML = "";
@@ -154,9 +132,9 @@ document.addEventListener("DOMContentLoaded", function () {
         const itemElement = document.createElement("div");
         itemElement.className = "nomenclature-summary-item";
         itemElement.innerHTML = `
-                    <span>${item.name}</span>
-                    <span>${formatCurrency(item.amount)}</span>
-                `;
+          <span>${item.name}</span>
+          <span>${formatCurrency(item.amount)}</span>
+        `;
         itemsContainer.appendChild(itemElement);
       });
     }
@@ -171,87 +149,88 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Расчет общей суммы
   function calculateTotal() {
-    const totalItemsAmount = formData.items.reduce(
-      (sum, item) => sum + item.amount,
-      0
-    );
-    return (
-      formData.contractorAmount +
-      formData.companyAmount +
-      totalItemsAmount +
-      formData.commission
-    );
+    const totalItemsAmount = formData.items.reduce((sum, item) => sum + item.amount, 0);
+    return formData.contractorAmount + totalItemsAmount + formData.commission;
   }
 
   // Форматирование валюты
   function formatCurrency(amount) {
-    return (
-      new Intl.NumberFormat("ru-RU", {
-        style: "decimal",
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0,
-      }).format(amount) + " ₽"
-    );
+    return new Intl.NumberFormat("ru-RU", {
+      style: "decimal",
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(amount) + " ₽";
   }
 
   // Добавление товара
   document.querySelector(".btn-add").addEventListener("click", function () {
-    const newItem = document.createElement("div");
+    const newItem = createNomenclatureItem();
+    document.querySelector(".nomenclature-list").appendChild(newItem);
+  });
 
+  // Создание элемента товара
+  function createNomenclatureItem() {
+    const newItem = document.createElement("div");
     newItem.className = "nomenclature-item";
     newItem.innerHTML = `
-            <div class="select-wrapper">
-                <select id="select-product" class="form-select">
-                    <option value="">-- Выберите товар --</option>
-                    ${products
-                      .map(
-                        (item) =>
-                          `<option data-price="${item.price}" value="${item.id}">${item.name}</option>`
-                      )
-                      .join("")}
-                </select>
-                <i class="fas fa-chevron-down"></i>
-            </div>
-            <input type="number" class="form-input" placeholder="0">
-            <button class="btn btn-remove">
-                <i class="fas fa-times"></i>
-            </button>
-        `;
+      <div class="select-wrapper">
+        <select class="form-select product-select">
+          <option value="">-- Выберите товар --</option>
+          ${products.map(item => 
+            `<option data-price="${item.price}" value="${item.id}">${item.name}</option>`
+          ).join("")}
+        </select>
+        <i class="fas fa-chevron-down"></i>
+      </div>
+      <div class="price-display">
+        <span class="price-label">Цена:</span>
+        <span class="price-value">0 ₽</span>
+      </div>
+      <input type="number" class="form-input product-amount" placeholder="Введите сумму" min="1">
+      <button class="btn btn-remove">
+        <i class="fas fa-times"></i>
+      </button>
+    `;
 
-    document.querySelector(".nomenclature-list").appendChild(newItem);
+    // Обработчик выбора товара
+    const select = newItem.querySelector(".product-select");
+    const priceDisplay = newItem.querySelector(".price-value");
+    const amountInput = newItem.querySelector(".product-amount");
 
-    // Добавляем обработчик для новой кнопки удаления
+    select.addEventListener("change", function() {
+      const selectedOption = this.options[this.selectedIndex];
+      const price = selectedOption.dataset.price || 0;
+      priceDisplay.textContent = formatCurrency(price);
+      
+      // Устанавливаем цену по умолчанию в поле ввода
+      if (price > 0 && !amountInput.value) {
+        amountInput.value = price;
+      }
+    });
+
+    // Обработчик удаления
     newItem.querySelector(".btn-remove").addEventListener("click", function () {
       newItem.remove();
     });
-  });
 
-  document.querySelectorAll("#select-product").forEach((select) => {
-    select.addEventListener("change", () => {
-      const selectedOption = select.options[select.selectedIndex]; // выбранный option
-      const price = selectedOption.dataset.price; // значение data-price
-    });
-  });
+    return newItem;
+  }
 
   // Удаление позиции номенклатуры
   document.addEventListener("click", function (e) {
-    if (
-      e.target.classList.contains("btn-remove") ||
-      e.target.closest(".btn-remove")
-    ) {
+    if (e.target.classList.contains("btn-remove") || e.target.closest(".btn-remove")) {
       const item = e.target.closest(".nomenclature-item");
-      if (item) {
+      if (item && document.querySelectorAll(".nomenclature-item").length > 1) {
         item.remove();
+      } else {
+        Toast.warning("Должен остаться хотя бы один товар");
       }
     }
   });
 
   // Копирование ссылки
   document.addEventListener("click", function (e) {
-    if (
-      e.target.classList.contains("btn-copy") ||
-      e.target.closest(".btn-copy")
-    ) {
+    if (e.target.classList.contains("btn-copy") || e.target.closest(".btn-copy")) {
       const input = document.querySelector(".generated-link input");
       input.select();
       document.execCommand("copy");
@@ -277,60 +256,114 @@ document.addEventListener("DOMContentLoaded", function () {
 
       Loader.start("Создаем ссылку...");
 
-      // Здесь будет реальная интеграция с API
       const totalAmount = calculateTotal();
 
-      axios
-        .post(
-          "https://test.shamex.online/api/v1/payment/init",
-          {
-            contractor: formData.contractor,
-            contractorAmount: formData.contractorAmount,
-            companyAmount: formData.companyAmount,
-            commission: formData.commission,
-            items: formData.items,
-            totalAmount,
+      axios.post(
+        "https://test.shamex.online/api/v1/payment/init",
+        {
+          contractorAmount: formData.contractorAmount,
+          commission: formData.commission,
+          items: formData.items,
+          totalAmount: totalAmount,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
           },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          }
-        )
-        .then((res) => {
-          const linkInput = document.querySelector(".generated-link input");
-          linkInput.value = res.data.paymentUrl;
-          currentStep = 4;
-          updateProgress();
-        })
-        .catch((err) => {
-          console.log(err);
-        })
-        .finally(() => {
-          Loader.hide();
-        });
+        }
+      )
+      .then((res) => {
+        const linkInput = document.querySelector(".generated-link input");
+        linkInput.value = res.data.paymentUrl;
+        currentStep = 4;
+        updateProgress();
+        
+        // Обновляем список последних ссылок
+        loadRecentLinks();
+      })
+      .catch((err) => {
+        console.error("Ошибка создания ссылки:", err);
+        Toast.error("Ошибка при создании ссылки");
+      })
+      .finally(() => {
+        Loader.hide();
+      });
 
-      document.querySelector(".success-result p strong").textContent =
-        formatCurrency(totalAmount);
+      document.querySelector(".success-result p strong").textContent = formatCurrency(totalAmount);
     }
   });
 
+  // Загрузка последних ссылок
+  function loadRecentLinks() {
+    axios.get("https://test.shamex.online/api/v1/payment/links", {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+    .then((res) => {
+      const linksList = document.getElementById("recentLinksList");
+      linksList.innerHTML = '';
+
+      res.data.slice(0, 5).forEach(link => {
+        const linkItem = document.createElement("div");
+        linkItem.className = "link-item";
+        
+        let statusClass = "pending";
+        let statusText = "Ожидание";
+        
+        if (link.status === "paid") {
+          statusClass = "paid";
+          statusText = "Оплачена";
+        } else if (link.status === "expired") {
+          statusClass = "expired";
+          statusText = "Истекла";
+        } else if (link.status === "active") {
+          statusClass = "success";
+          statusText = "Активна";
+        }
+
+        linkItem.innerHTML = `
+          <div class="link-info">
+            <h4>Заказ #${link.id}</h4>
+            <p>${formatCurrency(link.totalAmount)} • ${formatTime(link.createdAt)}</p>
+          </div>
+          <div class="link-status ${statusClass}">${statusText}</div>
+        `;
+        
+        linksList.appendChild(linkItem);
+      });
+    })
+    .catch(err => {
+      console.error("Ошибка загрузки ссылок:", err);
+    });
+  }
+
+  // Форматирование времени
+  function formatTime(timestamp) {
+    const now = new Date();
+    const date = new Date(timestamp);
+    const diffMs = now - date;
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+
+    if (diffMins < 1) return "только что";
+    if (diffMins < 60) return `${diffMins} мин назад`;
+    if (diffHours < 24) return `${diffHours} час назад`;
+    return `${diffDays} дней назад`;
+  }
+
   // Функции управления шагами
   function updateProgress() {
-    // Обновляем прогресс-бар
     progressSteps.forEach((step) => {
       const stepNum = parseInt(step.getAttribute("data-step"));
       step.classList.toggle("active", stepNum === currentStep);
     });
 
-    // Показываем текущий шаг
     stepContents.forEach((content) => {
       const contentStep = parseInt(content.getAttribute("data-step"));
       content.classList.toggle("active", contentStep === currentStep);
     });
 
-    // Плавная прокрутка к верху контента
     const modalBody = document.querySelector(".modal-body");
     modalBody.scrollTo({ top: 0, behavior: "smooth" });
   }
@@ -338,41 +371,27 @@ document.addEventListener("DOMContentLoaded", function () {
   function resetSteps() {
     currentStep = 1;
     formData = {
-      contractor: null,
       contractorAmount: 0,
-      companyAmount: 0,
       commission: 0,
       items: [],
     };
     updateProgress();
 
     // Сброс полей
-    document.getElementById("contractorSelect").selectedIndex = 0;
     document.getElementById("contractorAmount").value = "";
     document.getElementById("commissionAmount").value = "";
 
-    // Оставляем только один товар
-    const items = document.querySelectorAll(".nomenclature-item");
-    for (let i = 1; i < items.length; i++) {
-      items[i].remove();
-    }
-    if (items[0]) {
-      items[0].querySelector("select").selectedIndex = 0;
-      items[0].querySelector("input").value = "";
-    }
+    // Оставляем только один товар и сбрасываем его
+    const itemsContainer = document.querySelector(".nomenclature-list");
+    itemsContainer.innerHTML = '';
+    itemsContainer.appendChild(createNomenclatureItem());
   }
 
   function validateStep(step) {
     switch (step) {
       case 1:
-        const contractorSelect = document.getElementById("contractorSelect");
         const contractorAmount = document.getElementById("contractorAmount");
-
-        if (!contractorSelect.value || !contractorAmount.value) {
-          Toast.error("Заполните все поля для подрядчика");
-          return false;
-        }
-        if (parseFloat(contractorAmount.value) <= 0) {
+        if (!contractorAmount.value || parseFloat(contractorAmount.value) <= 0) {
           Toast.error("Сумма для подрядчика должна быть больше 0");
           return false;
         }
@@ -380,15 +399,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
       case 2:
         const commissionAmount = document.getElementById("commissionAmount");
-
-        // Проверка комиссии
-        if (!commissionAmount.value) {
-          Toast.error("Укажите комиссию");
-          return false;
-        }
-
-        if (parseFloat(commissionAmount.value) < 0) {
-          Toast.warning("Комиссия не может быть отрицательной");
+        if (!commissionAmount.value || parseFloat(commissionAmount.value) < 0) {
+          Toast.error("Укажите корректную комиссию");
           return false;
         }
 
@@ -398,8 +410,8 @@ document.addEventListener("DOMContentLoaded", function () {
         let hasItems = false;
 
         items.forEach((item) => {
-          const select = item.querySelector("select");
-          const input = item.querySelector("input");
+          const select = item.querySelector(".product-select");
+          const input = item.querySelector(".product-amount");
 
           if (select.value && input.value) {
             hasItems = true;
@@ -423,30 +435,37 @@ document.addEventListener("DOMContentLoaded", function () {
     return true;
   }
 
-  // Инициализация
-  function initComponents() {
-    console.log("Components initialized");
+  // Загрузка номенклатуры
+  function loadNomenclature() {
+    axios.get("https://test.shamex.online/api/v1/nomenclature")
+      .then((res) => {
+        products.length = 0;
+        products.push(...res.data);
+        
+        // Обновляем существующие селекты
+        document.querySelectorAll(".product-select").forEach(select => {
+          const currentValue = select.value;
+          select.innerHTML = '<option value="">-- Выберите товар --</option>' + 
+            products.map(item => 
+              `<option data-price="${item.price}" value="${item.id}">${item.name}</option>`
+            ).join("");
+          
+          // Восстанавливаем выбранное значение если есть
+          if (currentValue) {
+            select.value = currentValue;
+          }
+        });
+      })
+      .catch(err => {
+        console.error("Ошибка загрузки номенклатуры:", err);
+      });
   }
 
-  const contractorSelect = document.getElementById("contractorSelect");
+  // Инициализация
+  function init() {
+    loadNomenclature();
+    loadRecentLinks();
+  }
 
-  // Загрузка подрядчиков
-  axios.get("https://test.shamex.online/api/v1/contractors").then((res) => {
-    res.data.map((contractor) => {
-      contractorSelect.innerHTML += `<option value="${contractor.id}">${contractor.name} (ИНН ${contractor.inn})</option>`;
-    });
-  });
-
-  // Загрузка номенклатуры
-  axios.get("https://test.shamex.online/api/v1/nomenclature").then((res) => {
-    const selects = document.querySelectorAll(".nomenclature-item select");
-    selects.forEach((select) => {
-      res.data.map((nomenclature) => {
-        select.innerHTML += `<option data-price="${nomenclature.price}" value="${nomenclature.id}">${nomenclature.name}</option>`;
-      });
-    });
-    products.push(...res.data);
-  });
-
-  initComponents();
+  init();
 });
