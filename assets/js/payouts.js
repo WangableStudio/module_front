@@ -159,6 +159,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     ${statusInfo.text}
                 </span>
             </td>
+            <td class="client-fio">${payout.clientFio} ₽</td>
+            <td class="client-email">${payout.clientEmail} ₽</td>
             <td>
                 <div class="date-cell">
                     <div class="date">${formattedDate}</div>
