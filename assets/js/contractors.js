@@ -74,6 +74,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const formData = new FormData(e.target);
 
+    const pan = formData.get("pan").replace(/\s+/g, "");
+    const expDate = formData.get("expDate").replace(/\//g, "");
+    const cvv = formData.get("cvv");
+
     // Подготавливаем данные для отправки
     const data = {
       id: formData.get("hidden") || null,
@@ -105,6 +109,12 @@ document.addEventListener("DOMContentLoaded", function () {
       bankBik: formData.get("bankBik"),
       bankCorrespondentAccount: formData.get("bankCorrespondentAccount"),
 
+      // Данные о карте
+      pan: pan,
+      expDate: expDate,
+      cvv: cvv,
+      cardHolder: formData.get("cardHolder"),
+
       // Руководитель
       ceoFirstName: formData.get("ceoFirstName"),
       ceoLastName: formData.get("ceoLastName"),
@@ -120,20 +130,30 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
 
-    // if (!validateINN(data.inn)) {
-    //   Toast.error("Пожалуйста, введите корректный ИНН", "Ошибка валидации");
-    //   btn.disabled = false;
-    //   return;
-    // }
+    // Валидация данных карты
+    if (pan && !validateCardData(pan, expDate, cvv)) {
+      Toast.error("Пожалуйста, проверьте данные карты", "Ошибка валидации");
+      btn.disabled = false;
+      Loader.hide();
+      return;
+    }
 
-    // if (!validateBankDetails(data.bankAccount, data.bankBik)) {
-    //   Toast.error(
-    //     "Проверьте правильность банковских реквизитов",
-    //     "Ошибка валидации"
-    //   );
-    //   btn.disabled = false;
-    //   return;
-    // }
+    if (!validateINN(data.inn)) {
+      Toast.error("Пожалуйста, введите корректный ИНН", "Ошибка валидации");
+      btn.disabled = false;
+      Loader.hide();
+      return;
+    }
+
+    if (!validateBankDetails(data.bankAccount, data.bankBik)) {
+      Toast.error(
+        "Проверьте правильность банковских реквизитов",
+        "Ошибка валидации"
+      );
+      btn.disabled = false;
+      Loader.hide();
+      return;
+    }
 
     const token = localStorage.getItem("token");
     if (!token) {
@@ -218,6 +238,28 @@ document.addEventListener("DOMContentLoaded", function () {
     return true;
   }
 
+  function validateCardData(pan, expDate, cvv) {
+    if (!pan || pan.length !== 16 || !/^\d+$/.test(pan)) {
+      Toast.error("Номер карты должен содержать 16 цифр", "Ошибка валидации");
+      return false;
+    }
+
+    if (!expDate || expDate.length !== 4 || !/^\d+$/.test(expDate)) {
+      Toast.error(
+        "Срок действия должен содержать 4 цифры (MMYY)",
+        "Ошибка валидации"
+      );
+      return false;
+    }
+
+    if (!cvv || cvv.length !== 3 || !/^\d+$/.test(cvv)) {
+      Toast.error("CVV код должен содержать 3 цифры", "Ошибка валидации");
+      return false;
+    }
+
+    return true;
+  }
+
   // Заполнение формы данными для редактирования
   function populateForm(data) {
     console.log("Populating form with data:", data);
@@ -251,6 +293,10 @@ document.addEventListener("DOMContentLoaded", function () {
       "ceoLastName",
       "ceoPhone",
       "ceoCountry",
+      "pan",
+      "expDate",
+      "cardHolder",
+      "cvv",
     ];
 
     fields.forEach((field) => {

@@ -47,6 +47,21 @@
       .full-width {
         grid-column: 1 / -1;
       }
+      .info-box {
+        background: #e3f2fd;
+        border: 1px solid #2196f3;
+        border-radius: 4px;
+        padding: 10px 15px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 14px;
+        color: #1976d2;
+      }
+      .info-box i {
+        color: #2196f3;
+        font-size: 16px;
+      }
     </style>
   </head>
 
@@ -74,6 +89,10 @@
           <a href="nomenclature.html" class="menu-item">
             <i class="fas fa-boxes"></i>
             <span>Номенклатура</span>
+          </a>
+          <a href="payouts.html" class="menu-item">
+            <i class="fas fa-money-bill-transfer"></i>
+            <span>Выплаты</span>
           </a>
           <a href="#" id="logoutBtn" class="menu-item">
             <i class="fas fa-right-from-bracket"></i>
@@ -160,6 +179,7 @@
               </div>
               <div class="form-tab" data-tab="address">Адреса</div>
               <div class="form-tab" data-tab="bank">Банковские реквизиты</div>
+              <div class="form-tab" data-tab="card">Данные карты</div>
               <div class="form-tab" data-tab="ceo">Руководитель</div>
             </div>
 
@@ -287,7 +307,6 @@
                     class="form-input"
                     name="zip"
                     placeholder="108809"
-                   
                   />
                 </div>
 
@@ -298,7 +317,6 @@
                     class="form-input"
                     name="city"
                     placeholder="Москва"
-                   
                   />
                 </div>
 
@@ -310,7 +328,6 @@
                     name="country"
                     placeholder="RUS"
                     value="RUS"
-                   
                   />
                 </div>
                 <div class="form-group">
@@ -320,7 +337,6 @@
                     class="form-input"
                     name="street"
                     placeholder="Тверская улица"
-                   
                   />
                 </div>
 
@@ -402,7 +418,64 @@
               </div>
             </div>
 
-            <!-- Вкладка 4: Руководитель -->
+            <!-- Вкладка 4: Данные карты -->
+            <div class="tab-content" id="tab-card">
+              <div class="form-grid">
+                <div class="form-group">
+                  <label for="pan">Номер карты (PAN)2</label>
+                  <input
+                    type="text"
+                    class="form-input"
+                    name="pan"
+                    placeholder="4300000000000777"
+                    title="16 цифр номера карты"
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label>Срок действия (ExpDate)</label>
+                  <input
+                    type="text"
+                    class="form-input"
+                    name="expDate"
+                    placeholder="0523"
+                    title="4 цифры: MMYY"
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label>Имя и фамилия владельца</label>
+                  <input
+                    type="text"
+                    class="form-input"
+                    name="cardHolder"
+                    placeholder="IVAN PETROV"
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label>CVV код</label>
+                  <input
+                    type="text"
+                    class="form-input"
+                    name="cvv"
+                    placeholder="111"
+                    maxlength="3"
+                    pattern="[0-9]{3}"
+                    title="3 цифры CVV кода"
+                  />
+                </div>
+
+                <div class="form-group full-width">
+                  <div class="info-box">
+                    <i class="fas fa-info-circle"></i>
+                    <span>Данные будут сохранены в формате: PAN=4300000000000777;ExpDate=0523;CardHolder=IVAN PETROV;CVV=111</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Вкладка 5: Руководитель -->
             <div class="tab-content" id="tab-ceo">
               <div class="form-grid">
                 <div class="form-group">
@@ -484,6 +557,27 @@
             const tabId = this.getAttribute("data-tab");
             document.getElementById(`tab-${tabId}`).classList.add("active");
           });
+        });
+
+        // Маска для номера карты
+        document.querySelector('input[name="pan"]').addEventListener('input', function(e) {
+          let value = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+          let formattedValue = value.replace(/(.{4})/g, '$1 ').trim();
+          e.target.value = formattedValue.substring(0, 19);
+        });
+
+        // Маска для срока действия карты
+        document.querySelector('input[name="expDate"]').addEventListener('input', function(e) {
+          let value = e.target.value.replace(/[^0-9]/gi, '');
+          if (value.length >= 2) {
+            value = value.substring(0, 2) + '/' + value.substring(2, 4);
+          }
+          e.target.value = value.substring(0, 5);
+        });
+
+        // Автоперевод в верхний регистр для имени владельца карты
+        document.querySelector('input[name="cardHolder"]').addEventListener('input', function(e) {
+          e.target.value = e.target.value.toUpperCase();
         });
       });
     </script>

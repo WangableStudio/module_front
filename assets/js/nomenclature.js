@@ -147,11 +147,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function addRowEventListeners(row) {
     row.querySelector(".btn-icon.edit").addEventListener("click", function () {
+      Loader.start();
       const id = row.querySelector("input").value;
       axios
         .get(`https://test.shamex.online/api/v1/nomenclature/${id}`)
         .then((res) => {
           populateForm(res.data);
+          Loader.hide();
         })
         .catch((err) => {
           console.log(err);
@@ -173,11 +175,13 @@ document.addEventListener("DOMContentLoaded", function () {
         );
 
         if (confirmed) {
+          Loader.start();
           axios
             .delete(`https://test.shamex.online/api/v1/nomenclature/${id}`)
             .then((res) => {
               row.remove();
               Toast.success("Товар успешно удален");
+              Loader.hide();
             })
             .catch((err) => {
               Toast.error("Не получилось удалить товар");
@@ -186,19 +190,14 @@ document.addEventListener("DOMContentLoaded", function () {
       });
   }
 
-  // Поиск товаров
-  const searchInput = document.getElementById("searchInput");
-  const categoryFilter = document.getElementById("categoryFilter");
-  const statusFilter = document.getElementById("statusFilter");
-
-
-
+  Loader.start();
   axios
     .get("https://test.shamex.online/api/v1/nomenclature")
     .then((res) => {
       res.data.forEach((data) => {
         addItemToTable(data);
       });
+      Loader.hide();
     })
     .catch((err) => {
       console.log(err);

@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
+  let contractorArr = [];
   // Элементы
   const payoutModal = document.getElementById("payoutModal");
   const cancelPayoutBtn = document.getElementById("cancelPayout");
@@ -23,8 +24,8 @@ document.addEventListener("DOMContentLoaded", function () {
   // Инициализация
   function init() {
     setupEventListeners();
-    loadPayouts();
     loadContractors();
+    loadPayouts();
   }
 
   // Загрузка выплат из API
@@ -46,6 +47,8 @@ document.addEventListener("DOMContentLoaded", function () {
   async function loadContractors() {
     try {
       const contractors = await axios.get(`${API_BASE_URL}/contractors/`);
+      contractorArr = contractors.data;
+
       populateContractorsSelect(contractors.data);
     } catch (error) {
       console.error("Ошибка при загрузке подрядчиков:", error);
@@ -186,6 +189,18 @@ document.addEventListener("DOMContentLoaded", function () {
         icon: "fa-clock",
         text: "Ожидает выплаты",
       };
+    } else if (payout.status == "REJECTED") {
+      return {
+        className: "status-failed",
+        icon: "fa-exclamation-circle",
+        text: "Платеж отменен",
+      };
+    } else if (payout.status == "NEW") {
+      return {
+        className: "status-pending",
+        icon: "fa-clock",
+        text: "Не оплачена",
+      };
     } else {
       return {
         className: "status-failed",
@@ -198,9 +213,16 @@ document.addEventListener("DOMContentLoaded", function () {
   // Получение информации о подрядчике
   function getContractorInfo(payout) {
     if (payout.contractorId) {
+      console.log(contractorArr);
+
+      const contractorName = contractorArr.find(
+        (contractor) => contractor.id == payout.contractorId
+      ).name;
+      console.log(contractorName);
+
       return {
         name: "Подрядчик",
-        details: `ID: ${payout.contractorId}`,
+        details: `Имя: ${contractorName}`,
       };
     } else {
       return {
@@ -219,11 +241,12 @@ document.addEventListener("DOMContentLoaded", function () {
                     Выплатить
                 </button>
             `;
-    } else if (!payout.isConfirmed) {
+    } else if (!payout.isConfirmed && payout.status == "NEW") {
       return `
-                <button class="btn btn-sm btn-primary payout-btn" data-id="${payout.id}">
-                    <i class="fas fa-redo"></i>
-                    Повторить
+                <button class="btn btn-sm btn-primary copy-btn" data-url="${
+                  payout.sbpUrl || payout.paymentUrl
+                }">
+                    <i class="fas fa-copy"></i>
                 </button>
             `;
     } else {
@@ -254,6 +277,18 @@ document.addEventListener("DOMContentLoaded", function () {
         const btn = e.target.closest(".details-btn");
         const payoutId = btn.dataset.id;
         showPayoutDetails(payoutId);
+      }
+      if (e.target.closest(".copy-btn")) {
+        const btn = e.target.closest(".copy-btn");
+        const payoutUrl = btn.dataset.url;
+
+        if (payoutUrl) {
+          navigator.clipboard.writeText(payoutUrl).then(() => {
+            Toast.success("Ссылка успешно скопирована");
+          });
+        } else {
+          console.warn("Атрибут data-url не найден");
+        }
       }
     });
 
@@ -349,12 +384,11 @@ document.addEventListener("DOMContentLoaded", function () {
     confirmPayoutBtn.disabled = true;
 
     try {
-      await axios.post("https://test.shamex.online/api/v1/payout", {
+      await axios.post("https://test.shamex.online/api/v1/payment/payout", {
         paymentId: currentPayoutId,
         contractorId: contractorId,
         payoutMethod: payoutMethod,
       });
-
       Toast.success("Выплата успешно выполнена");
       closePayoutModal();
       // Обновляем данные
@@ -376,7 +410,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (!payout) return;
 
     const itemsList = payout.items
-      .map((item) => `${item.name}: ${item.amount} × ${item.defaultPrice} ₽`)
+      .map((item) => `${item.name}: ${item.amount} ₽`)
       .join("\n");
 
     const details = `
@@ -447,21 +481,6 @@ ${itemsList}
     if (searchTerm.length > 2) {
       applyFilters(); // Применяем фильтры с поиском
     }
-  }
-
-  // Показать индикатор загрузки
-  function showLoading() {
-    if (!payoutsTableBody) return;
-    payoutsTableBody.innerHTML = `
-            <tr>
-                <td colspan="6" class="text-center">
-                    <div class="loading-state">
-                        <i class="fas fa-spinner fa-spin"></i>
-                        <p>Загрузка данных...</p>
-                    </div>
-                </td>
-            </tr>
-        `;
   }
 
   // Запуск приложения
