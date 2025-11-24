@@ -338,7 +338,7 @@ document.addEventListener("DOMContentLoaded", function () {
         },
       })
       .then((res) => {
-        const links = res.data;
+        const links = res.data.sort((a, b) => b.id - a.id);
         linksList.innerHTML = "";
 
         if (links.length === 0) {
@@ -348,7 +348,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         // Берем последние 5 ссылок
-        links.slice(0, 5).forEach((link) => {
+        links.slice(0, 3).forEach((link) => {
           const linkItem = document.createElement("div");
           linkItem.className = "link-item";
 
@@ -376,7 +376,6 @@ document.addEventListener("DOMContentLoaded", function () {
           <p>${formatCurrency(link.totalAmount)} • ${formatTime(
             link.createdAt
           )}</p>
-          <small>${link.clientFio || "Клиент не указан"}</small>
         </div>
         <div class="link-status ${statusClass}">${statusText}</div>
       `;
