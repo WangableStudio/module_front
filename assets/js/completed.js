@@ -24,7 +24,7 @@ document.getElementById("paymentForm").addEventListener("submit", function (e) {
     return;
   }
 
-  sendDataToBackend(email, fio);
+  sendDataToBackend(email, fio, agreement);
 });
 
 function validateEmail(email) {
@@ -40,7 +40,7 @@ function hideAllErrors() {
   });
 }
 
-function sendDataToBackend(email, fio) {
+function sendDataToBackend(email, fio, agreement = ture) {
   const urlParams = new URLSearchParams(window.location.search);
   const payment = urlParams.get("payment");
   Loader.start("Подождите, идет переход...");
@@ -49,9 +49,10 @@ function sendDataToBackend(email, fio) {
       email,
       fio,
       payment,
+      agreement
     })
     .then((res) => {
-      window.location.href = res.data.paymentUrl;
+      window.location.href = res.data.sbpUrl;
     })
     .catch((err) => {
       console.log(err);

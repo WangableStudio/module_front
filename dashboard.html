@@ -72,8 +72,7 @@
                 </div>
                 <div class="stat-info">
                   <h3>Всего транзакций</h3>
-                  <p class="stat-number">124</p>
-                  <span class="stat-trend">+12% за месяц</span>
+                  <p class="stat-number" id="payments">124</p>
                 </div>
               </div>
 
@@ -83,8 +82,7 @@
                 </div>
                 <div class="stat-info">
                   <h3>Общая сумма</h3>
-                  <p class="stat-number">458 200 ₽</p>
-                  <span class="stat-trend">+18% за месяц</span>
+                  <p class="stat-number" id="total">458 200 ₽</p>
                 </div>
               </div>
 
@@ -94,8 +92,7 @@
                 </div>
                 <div class="stat-info">
                   <h3>Активные подрядчики</h3>
-                  <p class="stat-number">8</p>
-                  <span class="stat-trend">+2 за месяц</span>
+                  <p class="stat-number" id="contractors">8</p>
                 </div>
               </div>
 
@@ -104,39 +101,113 @@
                   <i class="fas fa-percentage"></i>
                 </div>
                 <div class="stat-info">
-                  <h3>Конверсия</h3>
-                  <p class="stat-number">78%</p>
-                  <span class="stat-trend">+5% за месяц</span>
+                  <h3>Номенклатуры</h3>
+                  <p class="stat-number" id="nomenclatures">3</p>
                 </div>
               </div>
             </div>
           </div>
 
           <!-- Последние ссылки -->
+          <!-- Последние ссылки -->
           <div class="recent-section">
             <h2>Последние платежные ссылки</h2>
-            <div class="links-list">
-              <div class="link-item">
-                <div class="link-info">
-                  <h4>Заказ #12345</h4>
-                  <p>19 200 ₽ • 5 мин назад</p>
+            <div class="links-list" id="recentLinksList">
+              <!-- Данные будут загружаться через JavaScript -->
+              <div class="loading">Загрузка...</div>
+            </div>
+          </div>
+        </div>
+        <!-- Блок аналитики -->
+        <div class="analytics-section">
+          <div class="section-header">
+            <h2>Аналитика платежей</h2>
+            <div class="filter-controls">
+              <div class="filter-group">
+                <label>Статус</label>
+                <div class="select-wrapper">
+                  <select class="form-select" id="statusFilter">
+                    <option value="all">Все статусы</option>
+                    <option value="paid">Оплаченные</option>
+                    <option value="confirmed">Подтвержденные</option>
+                    <option value="new">Новые</option>
+                    <option value="rejected">Отклоненные</option>
+                    <option value="paidout">Выплаченные</option>
+                  </select>
+                  <i class="fas fa-chevron-down"></i>
                 </div>
-                <div class="link-status success">Активна</div>
               </div>
-              <div class="link-item">
-                <div class="link-info">
-                  <h4>Заказ #12344</h4>
-                  <p>8 500 ₽ • 2 часа назад</p>
+
+              <div class="filter-group">
+                <label>Сортировка</label>
+                <div class="select-wrapper">
+                  <select class="form-select" id="sortFilter">
+                    <option value="newest">Сначала новые</option>
+                    <option value="oldest">Сначала старые</option>
+                    <option value="amount_high">По сумме (убыв.)</option>
+                    <option value="amount_low">По сумме (возр.)</option>
+                  </select>
+                  <i class="fas fa-chevron-down"></i>
                 </div>
-                <div class="link-status paid">Оплачена</div>
               </div>
-              <div class="link-item">
-                <div class="link-info">
-                  <h4>Заказ #12343</h4>
-                  <p>12 300 ₽ • 5 часов назад</p>
+
+              <div class="filter-group">
+                <label>Период</label>
+                <div class="date-range">
+                  <input type="date" class="form-input" id="startDate" />
+                  <span>—</span>
+                  <input type="date" class="form-input" id="endDate" />
                 </div>
-                <div class="link-status expired">Истекла</div>
               </div>
+
+              <button class="btn btn-secondary" id="resetFilters">
+                <i class="fas fa-refresh"></i>
+                Сбросить
+              </button>
+            </div>
+          </div>
+
+          <div class="stats-summary" id="statsSummary">
+            <!-- Статистика будет здесь -->
+          </div>
+
+          <div class="analytics-table-container">
+            <table class="analytics-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Заказ</th>
+                  <th>Клиент</th>
+                  <th>Сумма</th>
+                  <th>Подрядчик</th>
+                  <th>Комиссия</th>
+                  <th>Статус</th>
+                  <th>Дата создания</th>
+                  <th>Действия</th>
+                </tr>
+              </thead>
+              <tbody id="analyticsTableBody">
+                <tr>
+                  <td colspan="9" class="loading">Загрузка данных...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="pagination" id="pagination">
+            <!-- Пагинация будет добавляться через JS -->
+          </div>
+        </div>
+
+        <!-- Модальное окно деталей платежа -->
+        <div class="modal" id="paymentDetailsModal">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h2>Детали платежа</h2>
+              <span class="close">&times;</span>
+            </div>
+            <div class="modal-body" id="paymentDetailsContent">
+              <!-- Контент будет загружаться через JS -->
             </div>
           </div>
         </div>

@@ -203,8 +203,6 @@ document.addEventListener("DOMContentLoaded", function () {
       "fullName",
       "billingDescriptor",
       "inn",
-      "ogrn",
-      "email",
       "phone",
       "siteUrl",
       "zip",
@@ -219,6 +217,12 @@ document.addEventListener("DOMContentLoaded", function () {
       "ceoPhone",
       "ceoCountry",
     ];
+
+    if(data.type !== "self_employed" && data.type !== 'individual') {
+      requiredFields.push("ogrn");
+      requiredFields.push("kpp");
+      requiredFields.push("email");
+    }
 
     const missingFields = [];
     requiredFields.forEach((field) => {

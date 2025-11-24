@@ -159,13 +159,16 @@ document.addEventListener("DOMContentLoaded", function () {
                     ${statusInfo.text}
                 </span>
             </td>
-            <td class="client-fio">${payout.clientFio} ₽</td>
-            <td class="client-email">${payout.clientEmail} ₽</td>
+            <td class="client-fio">${payout.clientFio ? payout.clientFio : "-"}</td>
+            <td class="client-email">${payout.clientEmail? payout.clientEmail : "-"}</td>
             <td>
                 <div class="date-cell">
                     <div class="date">${formattedDate}</div>
                     <div class="time">${formattedTime}</div>
                 </div>
+            </td>
+            <td>
+                ${payout.agreement ? "Да" : "Нет"}    
             </td>
             <td>
                 <div class="action-buttons">
@@ -203,7 +206,13 @@ document.addEventListener("DOMContentLoaded", function () {
         icon: "fa-clock",
         text: "Не оплачена",
       };
-    } else {
+    } else if(payout.status == "AUTHORIZED"){
+      return {
+        className: "status-pending",
+        icon: "fa-clock",
+        text: "На проверке",
+      };
+    }else {
       return {
         className: "status-failed",
         icon: "fa-exclamation-circle",
@@ -245,13 +254,19 @@ document.addEventListener("DOMContentLoaded", function () {
             `;
     } else if (!payout.isConfirmed && payout.status == "NEW") {
       return `
-                <button class="btn btn-sm btn-primary copy-btn" data-url="${
-                  payout.sbpUrl || payout.paymentUrl
+                <button class="btn btn-sm btn-primary copy-btn" data-url="${payout.clientEmail && payout.clientFio ? 
+                  payout.sbpUrl || payout.paymentUrl : payout.url
                 }">
                     <i class="fas fa-copy"></i>
                 </button>
             `;
-    } else {
+    } else if(payout.status == "AUTHORIZED"){
+      return `
+                <button class="btn btn-sm btn-outline confirm-btn" data-id="${payout.id}">
+                    <i class="fas fa-check"></i>
+                </button>
+            `
+    } {
       return `
                 <button class="btn btn-sm btn-outline details-btn" data-id="${payout.id}">
                     <i class="fas fa-eye"></i>
@@ -291,6 +306,12 @@ document.addEventListener("DOMContentLoaded", function () {
         } else {
           console.warn("Атрибут data-url не найден");
         }
+      }
+
+      if (e.target.closest(".confirm-btn")) {
+        const btn = e.target.closest(".confirm-btn");
+        const payoutId = btn.dataset.id;
+        confirmPayout(payoutId);
       }
     });
 
@@ -435,6 +456,20 @@ ${itemsList}
   function refreshData() {
     loadPayouts();
     Toast.success("Данные обновлены");
+  }
+
+  function confirmPayout(payoutId) {
+    axios
+      .post("https://test.shamex.online/api/v1/payment/confirm", {
+        paymentId: payoutId,
+      })
+      .then((response) => {
+        Toast.success("Выплата подтверждена");
+        loadPayouts();
+      })
+      .catch((error) => {
+        Toast.error("Не удалось подтвердить выплату");
+      });
   }
 
   // Применение фильтров
