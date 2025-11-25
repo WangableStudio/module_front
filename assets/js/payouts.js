@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", function () {
   let allPayouts = [];
 
   // Базовый URL API
-  const API_BASE_URL = "https://test.shamex.online/api/v1";
+  const API_BASE_URL = "http://localhost:3000/api/v1";
 
   // Инициализация
   function init() {
@@ -407,7 +407,7 @@ document.addEventListener("DOMContentLoaded", function () {
     confirmPayoutBtn.disabled = true;
 
     try {
-      await axios.post("https://test.shamex.online/api/v1/payment/payout", {
+      await axios.post("http://localhost:3000/api/v1/payment/payout", {
         paymentId: currentPayoutId,
         contractorId: contractorId,
         payoutMethod: payoutMethod,
@@ -460,7 +460,7 @@ ${itemsList}
 
   function confirmPayout(payoutId) {
     axios
-      .post("https://test.shamex.online/api/v1/payment/confirm", {
+      .post("http://localhost:3000/api/v1/payment/confirm", {
         paymentId: payoutId,
       })
       .then((response) => {

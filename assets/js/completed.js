@@ -45,7 +45,7 @@ function sendDataToBackend(email, fio, agreement = ture) {
   const payment = urlParams.get("payment");
   Loader.start("Подождите, идет переход...");
   axios
-    .post("https://test.shamex.online/api/v1/payment/complate", {
+    .post("http://localhost:3000/api/v1/payment/complate", {
       email,
       fio,
       payment,

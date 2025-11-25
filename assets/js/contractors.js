@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const modalTitle = document.getElementById("modalTitle");
 
   axios
-    .get("https://test.shamex.online/api/v1/contractors/GetSbpMembers")
+    .get("http://localhost:3000/api/v1/contractors/GetSbpMembers")
     .then((res) => {
       res.data.forEach((member) => {
         document.getElementById(
@@ -165,8 +165,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const apiMethod = data.id ? axios.put : axios.post;
     const url = data.id
-      ? `https://test.shamex.online/api/v1/contractors/${data.id}`
-      : "https://test.shamex.online/api/v1/contractors/create";
+      ? `http://localhost:3000/api/v1/contractors/${data.id}`
+      : "http://localhost:3000/api/v1/contractors/create";
 
     apiMethod(url, data, {
       headers: {
@@ -405,7 +405,7 @@ document.addEventListener("DOMContentLoaded", function () {
       const id = row.querySelector("input").value;
       Loader.data("Загружаем данные...");
       axios
-        .get(`https://test.shamex.online/api/v1/contractors/${id}`)
+        .get(`http://localhost:3000/api/v1/contractors/${id}`)
         .then((res) => {
           populateForm(res.data);
           modalTitle.textContent = "Редактировать подрядчика";
@@ -428,7 +428,7 @@ document.addEventListener("DOMContentLoaded", function () {
         Toast.info("Регистрация в Т-Банке...", "Инфо");
 
         axios
-          .post(`https://test.shamex.online/api/v1/contractors/register`, {
+          .post(`http://localhost:3000/api/v1/contractors/register`, {
             contractorId: id,
           })
           .then((res) => {
@@ -459,7 +459,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (confirmed) {
           axios
-            .delete(`https://test.shamex.online/api/v1/contractors/${id}`)
+            .delete(`http://localhost:3000/api/v1/contractors/${id}`)
             .then((res) => {
               row.remove();
               Toast.success("Подрядчик успешно удален");
@@ -503,7 +503,7 @@ document.addEventListener("DOMContentLoaded", function () {
   function loadContractors() {
     Loader.start("Загружаем данные...");
     axios
-      .get("https://test.shamex.online/api/v1/contractors")
+      .get("http://localhost:3000/api/v1/contractors")
       .then((res) => {
         // Loader.hide();
         res.data.forEach((data) => {

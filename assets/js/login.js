@@ -7,7 +7,7 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
 
   btn.disabled = true;
   axios
-    .post("https://test.shamex.online/api/v1/user/login", {
+    .post("http://localhost:3000/api/v1/user/login", {
       login: document.getElementById("username").value,
       password: document.getElementById("password").value,
     })

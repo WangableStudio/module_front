@@ -5,7 +5,7 @@ if (!token) {
 
 axios
   .post(
-    "https://test.shamex.online/api/v1/user/auth",
+    "http://localhost:3000/api/v1/user/auth",
     {},
     {
       headers: {
