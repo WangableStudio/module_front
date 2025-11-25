@@ -45,7 +45,7 @@ function sendDataToBackend(email, fio, agreement = ture) {
   const payment = urlParams.get("payment");
   Loader.start("Подождите, идет переход...");
   axios
-    .post("http://localhost:3000/api/v1/payment/complate", {
+    .post("http://91.143.16.246:3000/api/v1/payment/complate", {
       email,
       fio,
       payment,

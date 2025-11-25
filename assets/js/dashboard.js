@@ -286,7 +286,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
       axios
         .post(
-          "http://localhost:3000/api/v1/payment/init",
+          "http://91.143.16.246:3000/api/v1/payment/init",
           {
             contractorAmount: formData.contractorAmount,
             commission: formData.commission,
@@ -331,7 +331,7 @@ document.addEventListener("DOMContentLoaded", function () {
     linksList.innerHTML = '<div class="loading">Загрузка...</div>';
 
     axios
-      .get("http://localhost:3000/api/v1/payment", {
+      .get("http://91.143.16.246:3000/api/v1/payment", {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
@@ -522,7 +522,7 @@ document.addEventListener("DOMContentLoaded", function () {
   // Загрузка номенклатуры
   function loadNomenclature() {
     axios
-      .get("http://localhost:3000/api/v1/nomenclature")
+      .get("http://91.143.16.246:3000/api/v1/nomenclature")
       .then((res) => {
         products.length = 0;
         products.push(...res.data);
@@ -552,7 +552,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function dashboard() {
     axios
-      .get("http://localhost:3000/api/v1/user/dashboard")
+      .get("http://91.143.16.246:3000/api/v1/user/dashboard")
       .then((res) => {
         document.getElementById("payments").textContent =
           res.data.payments.length;
@@ -593,7 +593,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     axios
-      .get("http://localhost:3000/api/v1/payment", {
+      .get("http://91.143.16.246:3000/api/v1/payment", {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",

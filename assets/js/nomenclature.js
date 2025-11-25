@@ -68,8 +68,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const apiMethod = data.id ? axios.put : axios.post;
     const url = data.id
-      ? `http://localhost:3000/api/v1/nomenclature/${data.id}`
-      : "http://localhost:3000/api/v1/nomenclature/create";
+      ? `http://91.143.16.246:3000/api/v1/nomenclature/${data.id}`
+      : "http://91.143.16.246:3000/api/v1/nomenclature/create";
     apiMethod(url, data, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -150,7 +150,7 @@ document.addEventListener("DOMContentLoaded", function () {
       Loader.start();
       const id = row.querySelector("input").value;
       axios
-        .get(`http://localhost:3000/api/v1/nomenclature/${id}`)
+        .get(`http://91.143.16.246:3000/api/v1/nomenclature/${id}`)
         .then((res) => {
           populateForm(res.data);
           Loader.hide();
@@ -177,7 +177,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (confirmed) {
           Loader.start();
           axios
-            .delete(`http://localhost:3000/api/v1/nomenclature/${id}`)
+            .delete(`http://91.143.16.246:3000/api/v1/nomenclature/${id}`)
             .then((res) => {
               row.remove();
               Toast.success("Товар успешно удален");
@@ -192,7 +192,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   Loader.start();
   axios
-    .get("http://localhost:3000/api/v1/nomenclature")
+    .get("http://91.143.16.246:3000/api/v1/nomenclature")
     .then((res) => {
       res.data.forEach((data) => {
         addItemToTable(data);

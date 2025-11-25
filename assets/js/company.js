@@ -45,8 +45,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const apiMethod = data.id ? axios.put : axios.post;
     const url = data.id
-      ? `http://localhost:3000/api/v1/company/${data.id}`
-      : "http://localhost:3000/api/v1/company/create";
+      ? `http://91.143.16.246:3000/api/v1/company/${data.id}`
+      : "http://91.143.16.246:3000/api/v1/company/create";
     apiMethod(url, data, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -129,7 +129,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function loadCompanyData() {
     axios
-      .get("http://localhost:3000/api/v1/company")
+      .get("http://91.143.16.246:3000/api/v1/company")
       .then((res) => {
         populateForm(res.data[0])
       })

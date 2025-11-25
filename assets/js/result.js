@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   Loader.start("Загружаем данные...");
   axios
-    .get(`http://localhost:3000/api/v1/payment/${orderId}`)
+    .get(`http://91.143.16.246:3000/api/v1/payment/${orderId}`)
     .then((res) => {
       paymentData = res.data; // Сохраняем данные
       const data = res.data;

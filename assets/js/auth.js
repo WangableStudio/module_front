@@ -5,7 +5,7 @@ if (!token) {
 
 axios
   .post(
-    "http://localhost:3000/api/v1/user/auth",
+    "http://91.143.16.246:3000/api/v1/user/auth",
     {},
     {
       headers: {
