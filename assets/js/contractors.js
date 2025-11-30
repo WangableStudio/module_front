@@ -104,7 +104,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
       // Банковские реквизиты
       bankName: formData.get("bankName"),
-      memberId: memberText,
+      memberId: memberText || null,
       bankAccount: formData.get("bankAccount"),
       bankBik: formData.get("bankBik"),
       bankCorrespondentAccount: formData.get("bankCorrespondentAccount"),
@@ -145,7 +145,7 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
 
-    if (!validateBankDetails(data.bankAccount, data.bankBik)) {
+    if (data.type !== "self_employed" && data.type !== 'individual' && !validateBankDetails(data.bankAccount, data.bankBik)) {
       Toast.error(
         "Проверьте правильность банковских реквизитов",
         "Ошибка валидации"
@@ -201,27 +201,25 @@ document.addEventListener("DOMContentLoaded", function () {
       "type",
       "name",
       "fullName",
-      "billingDescriptor",
       "inn",
       "phone",
-      "siteUrl",
-      "zip",
-      "city",
-      "country",
-      "bankName",
-      "bankAccount",
-      "bankBik",
-      "memberId",
-      "ceoFirstName",
-      "ceoLastName",
-      "ceoPhone",
-      "ceoCountry",
     ];
 
     if(data.type !== "self_employed" && data.type !== 'individual') {
       requiredFields.push("ogrn");
       requiredFields.push("kpp");
       requiredFields.push("email");
+      requiredFields.push("zip");
+      requiredFields.push("city");
+      requiredFields.push("country");
+      requiredFields.push("bankName");
+      requiredFields.push("bankAccount");
+      requiredFields.push("bankBik");
+      requiredFields.push("memberId");
+      requiredFields.push("ceoFirstName");
+      requiredFields.push("ceoLastName");
+      requiredFields.push("ceoPhone");
+      requiredFields.push("ceoCountry");
     }
 
     const missingFields = [];
